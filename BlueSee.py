@@ -1,5 +1,5 @@
 import asyncio
-from bleak import BleakScanner
+from bleak import *
 
 try:
     async def track_ble_devices():
