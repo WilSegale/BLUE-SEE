@@ -1,9 +1,24 @@
 from DontEdit import *
 
+# Function to allow the user to choose what to execute
+def user_choice():
+    print("Choose the function to execute:")
+    print("1: Check Bluetooth status")
+    print("2: Start BlueSeeScan")
+    print("3: Start Mac_SEE")
+    choice = input("Enter the number of your choice: ")
+    
+    if choice == "1":
+        check_bluetooth_status()  # Call Bluetooth status check
+    elif choice == "2":
+        BlueSeeScan()  # Call BlueSeeScan
+    elif choice == "3":
+        # Scan the network for IP addresses
+        scan_network("192.168.1.1/24")  # Change this to match your network
+    else:
+        print("Invalid choice. Please choose 1, 2, or 3.")
 
-
-print(banner)
-
+# Function to check Bluetooth status
 def check_bluetooth_status():
     try:
         result = subprocess.run(['system_profiler', 'SPBluetoothDataType'], capture_output=True, text=True)
@@ -11,11 +26,13 @@ def check_bluetooth_status():
             print("Bluetooth is disabled")
         else:
             print("Bluetooth is enabled")
-            BlueSeeScan()  # Call BlueSeeScan if Bluetooth is enabled
     except Exception as e:
         print(f"An error occurred: {e}")
 
+# Function to start the BlueSeeScan
 def BlueSeeScan():
+    print(banner)
+
     if os.geteuid() == 0:
         async def track_ble_devices():
             print("Tracking active BLE devices... Press Ctrl+C to stop.")
@@ -40,21 +57,8 @@ def BlueSeeScan():
 
                 active_devices = current_devices  # Update active devices list
 
-                # Scan the network for IP addresses
-                scan_network("192.168.1.1/24")  # Change this to match your network
-
+               
                 await asyncio.sleep(5)  # Adjust scan interval
-
-        def scan_network(ip_range):
-            print("\n🔍 Scanning network for connected devices...")
-            arp_request = scapy.ARP(pdst=ip_range)
-            broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
-            arp_request_broadcast = broadcast / arp_request
-            answered_list = scapy.srp(arp_request_broadcast, timeout=2, verbose=False)[0]
-
-            for element in answered_list:
-                print(f"🖥️  IP: {element[1].psrc}  |  MAC: {element[1].hwsrc}")
-                print(f"🖥️  IP: {element[1].psrc}  |  MAC: {element[1].hwsrc}", file=BLUE_SEE_SCAN_IP)
 
         try:
             asyncio.run(track_ble_devices())
@@ -63,5 +67,18 @@ def BlueSeeScan():
     else:
         print("USE ROOT FOR THIS PROGRAM")
 
-# First check if Bluetooth is enabled, then start the scanning
-check_bluetooth_status()
+def scan_network(ip_range):
+    # Scan the network for IP addresses
+    print("\n🔍 Scanning network for connected devices...")
+    arp_request = scapy.ARP(pdst=ip_range)
+    broadcast = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
+    arp_request_broadcast = broadcast / arp_request
+    answered_list = scapy.srp(arp_request_broadcast, timeout=2, verbose=False)[0]
+
+    for element in answered_list:
+        print(f"🖥️  IP: {element[1].psrc}  |  MAC: {element[1].hwsrc}")
+        print(f"🖥️  IP: {element[1].psrc}  |  MAC: {element[1].hwsrc}", file=BLUE_SEE_SCAN_IP)
+
+
+# Allow the user to choose what function to run
+user_choice()
