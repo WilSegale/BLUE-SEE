@@ -1,6 +1,10 @@
 import asyncio
 from bleak import *
-
+import pyfiglet
+BLUE_SEE_SCAN_ON = open("BLUE SEE SCAN ON.txt", "w")
+BLUE_SEE_SCAN_OFF = open("BLUE SEE SCAN OFF.txt", "w") 
+banner = pyfiglet.figlet_format("BLUE-SEE-SCAN")
+print(banner)
 try:
     async def track_ble_devices():
         print("Tracking active BLE devices... Press Ctrl+C to stop.")
@@ -14,12 +18,12 @@ try:
             # Check for new devices
             for addr, name in current_devices.items():
                 if addr not in active_devices:
-                    print(f"✅ Found: {name} [{addr}]")
+                    print(f"✅ Found: {name} [{addr}]",file=BLUE_SEE_SCAN_ON)
             
             # Check for devices that disappeared
             for addr in list(active_devices.keys()):
                 if addr not in current_devices:
-                    print(f"❌ This device is turned off: {active_devices[addr]} [{addr}]")
+                    print(f"❌ This device is turned off: {active_devices[addr]} [{addr}]",file=BLUE_SEE_SCAN_OFF)
                     del active_devices[addr]
 
             active_devices = current_devices  # Update active devices list
