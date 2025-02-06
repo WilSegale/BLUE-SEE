@@ -1,1 +1,4 @@
 bleak
+scapy
+pyfiglet
+pybluez
