@@ -10,9 +10,12 @@ def user_choice():
     
     if choice == "1":
         check_bluetooth_status()  # Call Bluetooth status check
+    
     elif choice == "2":
         BlueSeeScan()  # Call BlueSeeScan
+    
     elif choice == "3":
+        
         # Scan the network for IP addresses
         scan_network("192.168.1.1/24")  # Change this to match your network
     else:
@@ -65,6 +68,7 @@ def BlueSeeScan():
     else:
         print("USE ROOT FOR THIS PROGRAM")
 
+# Function to start BlueSEENetwork
 def scan_network(ip_range):
     # Scan the network for IP addresses
     print("\n🔍 Scanning network for connected devices...")
@@ -76,7 +80,6 @@ def scan_network(ip_range):
     for element in answered_list:
         print(f"🖥️  IP: {element[1].psrc}  |  MAC: {element[1].hwsrc}")
         print(f"🖥️  IP: {element[1].psrc}  |  MAC: {element[1].hwsrc}", file=BLUE_SEE_SCAN_IP)
-
 
 # Allow the user to choose what function to run
 user_choice()
