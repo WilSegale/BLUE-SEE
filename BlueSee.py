@@ -56,8 +56,6 @@ def BlueSeeScan():
                         del active_devices[addr]
 
                 active_devices = current_devices  # Update active devices list
-
-               
                 await asyncio.sleep(5)  # Adjust scan interval
 
         try:
